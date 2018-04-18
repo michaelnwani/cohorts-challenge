@@ -3,6 +3,5 @@
 <% 1.upto(1000) do |i| %>
 
 user_<%= i %>:
-  id: <%= i %>
-
+  created_at: <%= Time.current %>
 <% end %>
