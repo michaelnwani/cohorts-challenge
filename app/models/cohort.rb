@@ -1,8 +1,13 @@
 class Cohort < ApplicationRecord
   ONE_WEEK = 7
 
+  default_scope { order(start: :desc) }
+  default_scope { where("users > 0") }
+
+  has_many :buckets
+
   def self.backfill
-    Cohort.destroy_all
+    ActiveRecord::Base.connection.execute("TRUNCATE cohorts RESTART IDENTITY")
     today = Date.today
 
     start_date = User.minimum(:created_at).to_date # 2012-05-16
