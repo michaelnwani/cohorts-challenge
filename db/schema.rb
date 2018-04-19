@@ -17,13 +17,15 @@ ActiveRecord::Schema.define(version: 20180418144504) do
 
   create_table "buckets", force: :cascade do |t|
     t.bigint "cohort_id"
-    t.datetime "start"
-    t.datetime "end"
+    t.integer "lower_b", null: false
+    t.integer "upper_b", null: false
     t.integer "orderers", default: 0, null: false
     t.integer "first_time_orderers", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["cohort_id"], name: "index_buckets_on_cohort_id"
+    t.index ["lower_b"], name: "index_buckets_on_lower_b"
+    t.index ["upper_b"], name: "index_buckets_on_upper_b"
   end
 
   create_table "cohorts", force: :cascade do |t|
