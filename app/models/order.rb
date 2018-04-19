@@ -3,10 +3,10 @@ class Order < ApplicationRecord
 
   belongs_to :user
 
-  # Order.select("DISTINCT user_id, MIN(created_at) AS created_at").where(user_id: 3).group(:user_id)
-  def self.import(file)
+  def self.backfill
+    ActiveRecord::Base.connection.execute("TRUNCATE orders RESTART IDENTITY CASCADE")
     utc_tz = ActiveSupport::TimeZone.new('UTC')
-    CSV.foreach(file, headers: true) do |row|
+    CSV.foreach('public/orders.csv', headers: true) do |row|
       row_hash = row.to_hash
       id = row_hash['id']
       user_id = row_hash['user_id']
@@ -32,5 +32,16 @@ class Order < ApplicationRecord
                     created_at: created_at,
                     updated_at: updated_at)
     end
+
+    order_num_zero_group = Order.where(order_num: 0).group("orders.user_id, orders.id").group_by(&:user_id)
+    order_num_zero_group.each_value do |orders_per_user|
+      orders_per_user.sort_by { |user_order| user_order.created_at }
+      order_num = 1
+      orders_per_user.each do |user_order|
+        user_order.update_attribute(:order_num, order_num)
+        order_num += 1
+      end
+    end
+
   end
 end
