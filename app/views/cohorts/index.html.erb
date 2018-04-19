@@ -1,0 +1,45 @@
+<table>
+  <thead>
+    <tr>
+      <th>
+        Cohort
+      </th>
+
+      <th>
+        Users
+      </th>
+
+      <% while @current_lower_b < @max_upper_b %>
+        <th>
+          <%= @current_lower_b %>-<%= @current_upper_b %> days
+        </th>
+        <% @current_lower_b = @current_upper_b %>
+        <% @current_upper_b = @current_upper_b+7 %>
+      <% end %>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @buckets_cohort.each_value do |buckets| %>
+      <tr>
+        <td style="white-space: nowrap"><%= buckets[0].start.strftime("%m/%d") %>-<%= buckets[0].end.strftime("%m/%d") %></td>
+        <td style="white-space: nowrap"><%= buckets[0].users %></td>
+        <% @current_lower_b = 0 %>
+        <% @current_upper_b = @current_lower_b+7 %>
+        <% buckets.each do |bucket| %>
+          <td style="white-space: nowrap">
+            <% if bucket.orderers > 0 %>
+              <%= number_to_percentage((bucket.orderers/bucket.users.to_f)*100, precision: 0) %> orderers (<%= bucket.orderers%>) <br>
+            <% end %>
+
+            <% if bucket.first_time_orderers > 0 %>
+              <%= number_to_percentage((bucket.first_time_orderers/bucket.users.to_f)*100, precision: 0) %> 1st time (<%= bucket.first_time_orderers %>)
+            <% end %>
+          </td>
+
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+
+</table>
