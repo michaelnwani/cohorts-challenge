@@ -32,16 +32,5 @@ class Order < ApplicationRecord
                     created_at: created_at,
                     updated_at: updated_at)
     end
-
-    order_num_zero_group = Order.where(order_num: 0).group("orders.user_id, orders.id").group_by(&:user_id)
-    order_num_zero_group.each_value do |orders_per_user|
-      orders_per_user.sort_by { |user_order| user_order.created_at }
-      order_num = 1
-      orders_per_user.each do |user_order|
-        user_order.update_attribute(:order_num, order_num)
-        order_num += 1
-      end
-    end
-
   end
 end

@@ -18,7 +18,14 @@ class Cohort < ApplicationRecord
       start_date = end_date
       end_date = start_date+ONE_WEEK
     end
+  end
 
+  def self.challenge(default=8)
+    Cohort.joins(:buckets) \
+          .select("cohorts.id AS cohort_id, cohorts.start, cohorts.end, cohorts.users, buckets.*") \
+          .where("cohorts.start >= :start_date", start_date: Cohort.maximum(:start) - default.weeks) \
+          .order("cohorts.start DESC, buckets.lower_b ASC") \
+          .group_by(&:cohort_id)
   end
 
 end
