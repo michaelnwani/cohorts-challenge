@@ -27,14 +27,8 @@ group the users into week-long cohorts according to their signup date.
     ```
 * Afterwards, you can start up the applications rails server with `rails s`,
   and proceed to localhost:3000 to examine the cohorts data in an HTML page.
-* By default, the presented cohorts data will range from the latest data that we have to 8 weeks backwards. There are 2 ways to override this default behavior:
-    1. In the _cohorts_controller.rb_ file, `Cohort.challenge` accepts a default weeks argument:
-        ```ruby
-        # look back 12 weeks instead of the default 8:
-        @buckets_cohort = Cohort.challenge(12)
-        ```
-    2. You can change the default directly in the _cohort.rb_ model class:
-        ```ruby
-        # change the default from 8 weeks to 12:
-        def self.challenge(default=12)
-        ```
+* By default, the presented cohorts data at the root URL will range from the latest data that we have to 8 weeks backwards. You can override this behavior by making a request to the cohorts controller's show action e.g.:
+    ```ruby
+    # look back 12 weeks instead of the default 8:
+    localhost:3000/cohorts/12
+    ```
